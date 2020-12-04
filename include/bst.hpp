@@ -26,6 +26,10 @@ public:
 
     T *get(string key) const;
 
+    T *getRootValue() const;
+
+    string *getRootKey() const;
+
     list <T> *getBetweenRange(string start, string end) const;
 
     const BST *findMin() const;

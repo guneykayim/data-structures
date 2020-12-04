@@ -73,6 +73,23 @@ T *BST<T>::get(string key) const {
         return this->root->right.get(key);
     }
 }
+template <typename T>
+T *BST<T>::getRootValue() const {
+    if(isEmpty()) {
+        return nullptr;
+    } else {
+        return &this->root->value;
+    }
+}
+
+template <typename T>
+string *BST<T>::getRootKey() const {
+    if(isEmpty()) {
+        return nullptr;
+    } else {
+        return &this->root->key;
+    }
+}
 
 template <typename T>
 list <T>* BST<T>::getBetweenRange(string start, string end) const {
