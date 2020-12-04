@@ -1,5 +1,3 @@
-#include <bst.hpp>
-
 template <typename T>
 BST<T>::BST(const BST &another) { 
     if(another.isEmpty()) {

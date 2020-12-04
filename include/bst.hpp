@@ -1,6 +1,5 @@
-
-#ifndef BST_H
-#define BST_H
+#ifndef BST_HPP
+#define BST_HPP
 
 #include <list>
 #include <string>
@@ -49,4 +48,6 @@ private:
     void getBetweenRangeHelper(const BST<T> *current_bst, string start, string end, list <T> *resultList) const;
 };
 
-#endif //BST_H
+#include "bstimplementation.hpp"
+
+#endif //BST_HPP
