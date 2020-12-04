@@ -11,5 +11,5 @@ include_directories(include)
 include_directories(src) # because implementations of the template classes are here as hpp files
 add_subdirectory(src)
 
-# enable_testing()
-# add_subdirectory(test)
+enable_testing()
+add_subdirectory(test)
