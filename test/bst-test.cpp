@@ -87,7 +87,7 @@ TEST(BSTTestMax, testMax2) {
     EXPECT_TRUE(res->compare("u") == 0);
 }
 
-TEST(BSTTestRange, testBetweenRange1) {
+TEST(BSTTestBetweenRange, testBetweenRange1) {
     BST<int> bst;
     string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
     for (string e : s) {
@@ -98,7 +98,7 @@ TEST(BSTTestRange, testBetweenRange1) {
     EXPECT_TRUE(r->size() == s_size - 1); // -1 because s[] has "y" 2 times, one of them is not added
 }
 
-TEST(BSTTestRange, testBetweenRange2) {
+TEST(BSTTestBetweenRange, testBetweenRange2) {
     BST<int> bst;
     string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
     for (string e : s) {
@@ -110,7 +110,7 @@ TEST(BSTTestRange, testBetweenRange2) {
     EXPECT_TRUE(r->size() == s_size-2);
 }
 
-TEST(BSTTestRange, testBetweenRange3) {
+TEST(BSTTestBetweenRange, testBetweenRange3) {
     BST<int> bst;
     string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
     for (string e : s) {
@@ -120,7 +120,7 @@ TEST(BSTTestRange, testBetweenRange3) {
     EXPECT_TRUE(r->size() == 2);
 }
 
-TEST(BSTTestRange, testBetweenRange4) {
+TEST(BSTTestBetweenRange, testBetweenRange4) {
     BST<int> bst;
     string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
     for (string e : s) {
@@ -130,7 +130,7 @@ TEST(BSTTestRange, testBetweenRange4) {
     EXPECT_TRUE(r->size() == 5);
 }
 
-TEST(BSTTestRange, testBetweenRange5) {
+TEST(BSTTestBetweenRange, testBetweenRange5) {
     BST<int> bst;
     string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
     for (string e : s) {
@@ -141,7 +141,7 @@ TEST(BSTTestRange, testBetweenRange5) {
     EXPECT_TRUE(r->size() == 5);
 }
 
-TEST(BSTTestRange, testBetweenRange6) {
+TEST(BSTTestBetweenRange, testBetweenRange6) {
     BST<int> bst;
     string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
     for (string e : s) {
@@ -159,4 +159,55 @@ TEST(BSTTestRange, testBetweenRange6) {
     }
 
     EXPECT_TRUE(isAscending);
+}
+
+TEST(BSTTestCopyConstructor, testCopyConstructor1) {
+    BST<int> bst;
+    string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
+    for (string e : s) {
+        bst.add(e, e[0] - 'a' + 1);
+    }
+    
+    BST<int> bst2(bst);
+
+    EXPECT_EQ(bst.isEmpty(), bst2.isEmpty());
+    EXPECT_NE(bst.findMax(), bst2.findMax()); 
+    EXPECT_TRUE(bst.findMax()->getRootKey()->compare(*(bst2.findMax()->getRootKey())) == 0);
+    EXPECT_NE(bst.findMax()->getRootKey(), bst2.findMax()->getRootKey()); 
+    EXPECT_EQ(*(bst.findMax()->getRootValue()), *(bst2.findMax()->getRootValue()));
+    EXPECT_NE(bst.findMax()->getRootValue(), bst2.findMax()->getRootValue());
+    EXPECT_TRUE(bst.findMin()->getRootKey()->compare(*(bst2.findMin()->getRootKey())) == 0);
+    EXPECT_NE(bst.findMin()->getRootKey(), bst2.findMin()->getRootKey()); 
+    EXPECT_EQ(*(bst.findMin()->getRootValue()), *(bst2.findMin()->getRootValue()));
+    EXPECT_NE(bst.findMin()->getRootValue(), bst2.findMin()->getRootValue());
+}
+
+TEST(BSTTestCopyConstructor, testCopyConstructor2) {
+    BST<int> bst;
+    string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
+    for (string e : s) {
+        bst.add(e, e[0] - 'a' + 1);
+    }
+    
+    BST<int> bst2(bst);
+    bst.remove("a");
+
+    EXPECT_FALSE(bst.findMin()->getRootKey()->compare(*(bst2.findMin()->getRootKey())) == 0);
+    EXPECT_NE(*(bst.findMin()->getRootValue()), *(bst2.findMin()->getRootValue()));
+}
+
+TEST(BSTTestCopyConstructor, testCopyConstructor3) {
+    BST<int> *bst = new BST<int>();
+    string s[] = {"g", "u", "n", "e", "y", "k", "a", "y", "i", "m"};
+    for (string e : s) {
+        bst->add(e, e[0] - 'a' + 1);
+    }
+    
+    BST<int> bst2(*bst);
+    
+    delete bst;
+
+    EXPECT_FALSE(bst2.isEmpty());
+    EXPECT_TRUE(bst2.findMin()->getRootKey()->compare("a") == 0);
+    EXPECT_TRUE(bst2.findMax()->getRootKey()->compare("y") == 0);
 }
