@@ -92,13 +92,13 @@ string *BST<T>::getRootKey() const {
 }
 
 template <typename T>
-list <T>* BST<T>::getBetweenRange(string start, string end) const {
+list <pair<string, T>> *BST<T>::getBetweenRange(string start, string end) const {
     if (start > end) {
         string temp = end;
         end = start;
         start = temp;
     }
-    list <T> *resultList = new list<T>;
+    list<pair<string, T>> *resultList = new list<pair<string, T>>;
     this->getBetweenRangeHelper(this, start, end, resultList);
 
     return resultList;
@@ -127,13 +127,13 @@ const BST<T>* BST<T>::findMax() const {
 }
 
 template <typename T>
-void BST<T>::getBetweenRangeHelper(const BST<T> *current_bst, string start, string end, list<T> *resultList) const {
+void BST<T>::getBetweenRangeHelper(const BST<T> *current_bst, string start, string end, list<pair<string, T>> *resultList) const {
     if(current_bst->root == nullptr) {
         return;
     }
     getBetweenRangeHelper(&(current_bst->root->left), start, end, resultList);
     if(current_bst->root->key.compare(start) >= 0 && current_bst->root->key.compare(end) <= 0) {
-        resultList->emplace_back(current_bst->root->value);
+        resultList->push_back({current_bst->root->key, current_bst->root->value});
     }
     getBetweenRangeHelper(&(current_bst->root->right), start, end, resultList);
 }

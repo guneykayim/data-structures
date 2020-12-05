@@ -6,6 +6,7 @@
 
 using std::string;
 using std::list;
+using std::pair;
 
 template <typename T>
 class BST
@@ -30,7 +31,7 @@ public:
 
     string *getRootKey() const;
 
-    list <T> *getBetweenRange(string start, string end) const;
+    list <pair<string, T>> *getBetweenRange(string start, string end) const;
 
     const BST *findMin() const;
 
@@ -49,7 +50,7 @@ private:
     };
 
     BSTNode<T> *root = nullptr;
-    void getBetweenRangeHelper(const BST<T> *current_bst, string start, string end, list <T> *resultList) const;
+    void getBetweenRangeHelper(const BST<T> *current_bst, string start, string end, list <pair<string, T>> *resultList) const;
 };
 
 #include "bstimplementation.hpp"
