@@ -4,24 +4,30 @@
 
 using std::string;
 
-int (*hash_func_str)(string) = [](string s) { return 5 - ((int) s.length()) % 5; };
+int (*hash_func_str)(string) = [](string s) { 
+    int sum = 0;
+    for(char c : s) {
+        sum += c;
+    }
+    return sum % INT16_MAX;
+};
 int (*hash_func_int)(int) = [](int n) { return n * 2; };
 
-TEST(HashTableTestIsEmpty, testIsEmpty1) {
+TEST(HashTableIsEmpty, test1) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     EXPECT_EQ(ht.size(), size);
     EXPECT_EQ(ht.count(), 0);
 }
 
-TEST(HashTableTestAdd, testAdd1) {
+TEST(HashTableAdd, test1) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     int *i = new int(5);
     EXPECT_EQ(ht.add("guney", i), 0);
 }
 
-TEST(HashTableTestIsEmpty, testIsEmpty2) {
+TEST(HashTableIsEmpty, test2) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     int *i = new int(5);
@@ -29,7 +35,7 @@ TEST(HashTableTestIsEmpty, testIsEmpty2) {
     EXPECT_EQ(ht.count(), 1);
 }
 
-TEST(HashTableTestAdd, testAdd2) {
+TEST(HashTableAdd, test2) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     int *i = new int(5);
@@ -38,13 +44,13 @@ TEST(HashTableTestAdd, testAdd2) {
     EXPECT_EQ(ht.add("yenug", i2), 1); // 1 collision as both strings will have the same hash
 }
 
-TEST(HashTableTestRemove, testRemove1) {
+TEST(HashTableRemove, test1) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     EXPECT_EQ(ht.remove("guney"), false);
 }
 
-TEST(HashTableTestRemove, testRemove2) {
+TEST(HashTableRemove, test2) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     int *i = new int(5);
@@ -52,7 +58,7 @@ TEST(HashTableTestRemove, testRemove2) {
     EXPECT_EQ(ht.remove("guney"), true);
 }
 
-TEST(HashTableTestIsEmpty, testIsEmpty3) {
+TEST(HashTableIsEmpty, test3) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     int *i = new int(5);
@@ -61,7 +67,7 @@ TEST(HashTableTestIsEmpty, testIsEmpty3) {
     EXPECT_EQ(ht.count(), 0);
 }
 
-TEST(HashTableTestResize, testResize1) {
+TEST(HashTableResize, test1) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     string s[] = {"g", "u", "n", "e", "y"};
@@ -79,7 +85,7 @@ TEST(HashTableTestResize, testResize1) {
     EXPECT_EQ(ht.size(), 20);
 }
 
-TEST(HashTableTestAdd, testAdd3) {
+TEST(HashTableAdd, test3) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
     int *i = new int(5);
@@ -89,7 +95,7 @@ TEST(HashTableTestAdd, testAdd3) {
     EXPECT_EQ(*ht.get("guney"), *i2);
 }
 
-TEST(HashTableMemoryManagement, testMemoryManagement1) {
+TEST(HashTableMemoryManagement, test1) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
     int *i = new int(5);
@@ -98,7 +104,7 @@ TEST(HashTableMemoryManagement, testMemoryManagement1) {
     EXPECT_EQ(*i, *ht.get("guney"));
 }
 
-TEST(HashTableMemoryManagement, testMemoryManagement2) {
+TEST(HashTableMemoryManagement, test2) {
     int size = 10;
     HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
     int *i = new int(5);
@@ -106,3 +112,43 @@ TEST(HashTableMemoryManagement, testMemoryManagement2) {
     EXPECT_EQ(i, ht.get("guney"));
     EXPECT_EQ(*i, *ht.get("guney"));
 }
+
+TEST(HashTableCollision, test1) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    string s = "guneykayimimplementshashtable";
+    string expectedResult = "00001012001100111100011111011";
+    string actualResult = "";
+    for (char c : s) {
+        int *i = new int(c - 'a' + 1);
+        actualResult.append(std::to_string(ht.add(string(1, c), i)));
+    }
+    EXPECT_EQ(expectedResult, actualResult);
+}
+
+TEST(HashTableCollision, test2) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::QUADRATIC, 0.5);
+    string s = "guneykayimimplementshashtable";
+    string expectedResult = "00001012001100111100011111011";
+    string actualResult = "";
+    for (char c : s) {
+        int *i = new int(c - 'a' + 1);
+        actualResult.append(std::to_string(ht.add(string(1, c), i)));
+    }
+    EXPECT_EQ(expectedResult, actualResult);
+}
+
+TEST(HashTableCollision, test3) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::DOUBLE, 0.5);
+    string s = "guneykayimimplementshashtable";
+    string expectedResult = "00002013011200111100011111011";
+    string actualResult = "";
+    for (char c : s) {
+        int *i = new int(c - 'a' + 1);
+        actualResult.append(std::to_string(ht.add(string(1, c), i)));
+    }
+    EXPECT_EQ(expectedResult, actualResult);
+}
+
