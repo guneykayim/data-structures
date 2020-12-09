@@ -15,8 +15,10 @@ HashTable<K,T>::~HashTable()
 { 
     if(isReferenceOnly == false) {
         for(int i = 0; i < m; ++i) {
-            delete table[i].data;
-            table[i].data = nullptr;
+            if(table[i].data != nullptr) {
+                delete table[i].data;
+                table[i].data = nullptr;
+            }
         }
     } 
     delete[] table;
@@ -60,8 +62,10 @@ void HashTable<K,T>::operator=(const HashTable& another)
         if(table != nullptr){
             if(isReferenceOnly == false) {
                 for(int i = 0; i < m; ++i) {
-                    delete table[i].data;
-                    table[i].data = nullptr;
+                    if(table[i].data != nullptr) {
+                        delete table[i].data;
+                        table[i].data = nullptr;
+                    }
                 }
             } 
             delete[] table;
@@ -161,8 +165,15 @@ int HashTable<K,T>::add(K key, T* data)
         }
 
         if (table[hash_index].key == key) {
-            ///TODO: before overriding data, delete it if necessary
-            table[hash_index].data = data;
+            if(isReferenceOnly == false) {
+                if(table[hash_index].data != nullptr) {            
+                    delete table[hash_index].data;
+                    table[hash_index].data = nullptr;
+                }
+                table[hash_index].data = new T(*data);
+            } else {
+                table[hash_index].data = data;
+            }
             break;
         }
     }
