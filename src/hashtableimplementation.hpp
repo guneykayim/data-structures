@@ -15,13 +15,13 @@ HashTable<K,T>::~HashTable()
 { 
     if(_isReferenceOnly == false) {
         for(int i = 0; i < _size; ++i) {
-            if(_table[i].data != nullptr) {
+            if(_table[i].status != CellStatus::EMPTY && _table[i].data != nullptr) {
                 delete _table[i].data;
                 _table[i].data = nullptr;
             }
         }
+        delete[] _table;
     } 
-    delete[] _table;
 }
 
 template <typename K, typename T>
