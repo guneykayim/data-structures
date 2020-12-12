@@ -49,6 +49,12 @@ private:
     int _count; 
     double _loadLimit;
     bool _isReferenceOnly;
+
+    int getHashIndex(int h1index, int i, int sizeFactor = 1) const;
+
+    void deleteHashTable();
+
+    void deepCopyHashTable(const HashTable& another);
 };
 
 #include "hashtableimplementation.hpp"
