@@ -152,3 +152,152 @@ TEST(HashTableCollision, test3) {
     EXPECT_EQ(expectedResult, actualResult);
 }
 
+TEST(HashTableDeepCopy, test1) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(ht);
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*ht.get(cities[i]), *htCopy.get(cities[i]));
+        EXPECT_NE(ht.get(cities[i]), htCopy.get(cities[i]));
+    }
+}
+
+TEST(HashTableDeepCopy, test2) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(ht);
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*ht.get(cities[i]), *htCopy.get(cities[i]));
+        EXPECT_NE(ht.get(cities[i]), htCopy.get(cities[i]));
+    }
+}
+
+TEST(HashTableDeepCopy, test3) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
+    htCopy = ht;
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*ht.get(cities[i]), *htCopy.get(cities[i]));
+        EXPECT_NE(ht.get(cities[i]), htCopy.get(cities[i]));
+    }
+}
+
+TEST(HashTableDeepCopy, test4) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
+    htCopy = ht;
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*ht.get(cities[i]), *htCopy.get(cities[i]));
+        EXPECT_NE(ht.get(cities[i]), htCopy.get(cities[i]));
+    }
+}
+
+TEST(HashTableDeepCopy, test5) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(ht);
+
+    for(int i = 0; i < n; ++i){
+        ht.remove(cities[i]);
+    }
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*htCopy.get(cities[i]), i);
+    }
+}
+
+TEST(HashTableDeepCopy, test6) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(ht);
+
+    for(int i = 0; i < n; ++i){
+        ht.remove(cities[i]);
+    }
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*htCopy.get(cities[i]), i);
+    }
+}
+
+TEST(HashTableDeepCopy, test7) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+   
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, true);
+    htCopy = ht;
+
+    for(int i = 0; i < n; ++i){
+        ht.remove(cities[i]);
+    }
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*htCopy.get(cities[i]), i);
+    }
+}
+
+TEST(HashTableDeepCopy, test8) {
+    int size = 10;
+    HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+
+    for(int i = 0; i < n; ++i){
+        ht.add(cities[i], new int(i));
+    }
+    
+    HashTable<string, int> htCopy(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5, false);
+    htCopy = ht;
+
+    for(int i = 0; i < n; ++i){
+        ht.remove(cities[i]);
+    }
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*htCopy.get(cities[i]), i);
+    }
+}
