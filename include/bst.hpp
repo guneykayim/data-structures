@@ -7,6 +7,7 @@
 using std::string;
 using std::list;
 using std::pair;
+using std::shared_ptr;
 
 template <typename T>
 class BST
@@ -14,8 +15,6 @@ class BST
 public:
 
     BST() = default;
-
-    ~BST() { if(root != nullptr) delete root; }
 
     BST(const BST &another);
 
@@ -49,7 +48,7 @@ private:
         BSTNode(string key, S value) : key(key), value(value) {};
     };
 
-    BSTNode<T> *root = nullptr;
+    shared_ptr<BSTNode<T>> root;
     void getBetweenRangeHelper(const BST<T> *current_bst, string start, string end, list <pair<string, T>> *resultList) const;
 };
 

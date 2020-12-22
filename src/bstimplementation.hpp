@@ -1,9 +1,11 @@
+using std::make_shared;
+
 template <typename T>
 BST<T>::BST(const BST &another) { 
     if(another.isEmpty()) {
         return;
     }
-    this->root = new BSTNode<T>(*another.root);
+    this->root = make_shared<BSTNode<T>>(*another.root);
 }
 
 template <typename T>
@@ -14,7 +16,7 @@ bool BST<T>::isEmpty() const {
 template <typename T>
 bool BST<T>::add(string key, T value) { 
     if(isEmpty()) {
-        this->root = new BSTNode<T>(key, value);
+        this->root = make_shared<BSTNode<T>>(key, value);
         return true;
     } else if(key.compare(this->root->key) == 0) {
         return false;
@@ -33,13 +35,13 @@ bool BST<T>::remove(string key) {
         if(this->root->left.root == nullptr && this->root->right.root == nullptr){ // no BSTs in right or left
             this->root = nullptr;            
         } else if(this->root->left.root != nullptr && this->root->right.root == nullptr){ // there is a BST in left
-            BSTNode<T> *tmp = this->root->left.root;
-            this->root = new BSTNode<T>(tmp->key, tmp->value);
+            shared_ptr<BSTNode<T>> tmp = this->root->left.root;
+            this->root = make_shared<BSTNode<T>>(tmp->key, tmp->value);
             this->root->left.root = tmp->left.root;
             this->root->right.root = tmp->right.root; 
         } else if(this->root->left.root == nullptr && this->root->right.root != nullptr){ // there is a BST in right
-            BSTNode<T> *tmp = this->root->right.root;
-            this->root = new BSTNode<T>(tmp->key, tmp->value);
+            shared_ptr<BSTNode<T>> tmp = this->root->right.root;
+            this->root = make_shared<BSTNode<T>>(tmp->key, tmp->value);
             this->root->left.root = tmp->left.root;
             this->root->right.root = tmp->right.root;
         } else{
