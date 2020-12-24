@@ -2,6 +2,7 @@
 #define HASHTABLE_HPP
 
 using std::unique_ptr;
+using std::shared_ptr;
 
 enum class Mode {
    LINEAR, 
@@ -12,7 +13,7 @@ enum class Mode {
 template <typename K, typename T>
 class HashTable {
 public:
-    HashTable(int size, int (*h)(K), int (*h2)(int), Mode mode, double loadLimit, bool isReferenceOnly = false);
+    HashTable(int size, int (*h)(K), int (*h2)(int), Mode mode, double loadLimit);
 
     HashTable(const HashTable &another);
 
@@ -24,11 +25,11 @@ public:
 
     void operator=(const HashTable& another);
 
-    int add(K key, T *data);
+    int add(K key, shared_ptr<T> data);
 
     bool remove(K key);
 
-    T* get(K key) const;
+    shared_ptr<T> get(K key) const;
 
 private:
    enum class CellStatus {
@@ -39,7 +40,7 @@ private:
 
    struct Cell {
        K key; 
-       T* data; 
+       shared_ptr<T> data; 
        CellStatus status; 
    };
 
@@ -50,7 +51,6 @@ private:
     int (*_h2)(int); 
     int _count; 
     double _loadLimit;
-    bool _isReferenceOnly;
 
     int getHashIndex(int h1index, int i, int sizeFactor = 1) const;
 

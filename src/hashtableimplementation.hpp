@@ -1,8 +1,9 @@
 using std::unique_ptr;
+using std::make_shared;
 
 template <typename K, typename T>
-HashTable<K,T>::HashTable(int size, int (*h)(K), int (*h2)(int), Mode mode, double loadLimit, bool isReferenceOnly)
-    : _size(size), _h(h), _h2(h2), _mode(mode), _loadLimit(loadLimit), _isReferenceOnly(isReferenceOnly)
+HashTable<K,T>::HashTable(int size, int (*h)(K), int (*h2)(int), Mode mode, double loadLimit)
+    : _size(size), _h(h), _h2(h2), _mode(mode), _loadLimit(loadLimit)
 { 
     _count = 0;
     _table = unique_ptr<Cell[]>(new Cell[_size]);
@@ -43,7 +44,7 @@ void HashTable<K,T>::operator=(const HashTable& another) {
 }
 
 template <typename K, typename T>
-int HashTable<K,T>::add(K key, T* data)
+int HashTable<K,T>::add(K key, shared_ptr<T> data)
 {
     int plus1 = (get(key) == nullptr);
     if(_count+plus1 > _loadLimit * _size) {
@@ -57,7 +58,7 @@ int HashTable<K,T>::add(K key, T* data)
         for(int i = 0; i < _size; ++i) {
             if(_table[i].status == CellStatus::ACTIVE) {
                 K k = _table[i].key;
-                T* d = _table[i].data;
+                shared_ptr<T> d = _table[i].data;
                 
                 int index = _h(k);
                 int hash_index = -1;
@@ -100,15 +101,7 @@ int HashTable<K,T>::add(K key, T* data)
         }
 
         if (_table[hash_index].key == key) {
-            if(_isReferenceOnly == false) {
-                if(_table[hash_index].data != nullptr) {            
-                    delete _table[hash_index].data;
-                    _table[hash_index].data = nullptr;
-                }
-                _table[hash_index].data = new T(*data);
-            } else {
-                _table[hash_index].data = data;
-            }
+            _table[hash_index].data = data;
             break;
         }
     }
@@ -127,10 +120,7 @@ bool HashTable<K,T>::remove(K key)
         if (_table[hash_index].status == CellStatus::ACTIVE) {                
             if(_table[hash_index].key == key) {
                 _table[hash_index].status = CellStatus::DELETED;
-                if(_isReferenceOnly == false) {
-                    delete _table[hash_index].data;
-                    _table[hash_index].data = nullptr;
-                }
+                _table[hash_index].data.reset();
                 _count--;
                 return true;
             }
@@ -141,9 +131,8 @@ bool HashTable<K,T>::remove(K key)
     return false;
 }
 
-
 template <typename K, typename T>
-T* HashTable<K,T>::get(K key) const
+shared_ptr<T> HashTable<K,T>::get(K key) const
 { 
     int index = _h(key);
     int hash_index = -1;
@@ -175,14 +164,11 @@ int HashTable<K,T>::getHashIndex(int h1index, int i, int sizeFactor) const {
 
 template <typename K, typename T>
 void HashTable<K,T>::deleteHashTable() {
-    if(_isReferenceOnly == false) {
-        for(int i = 0; i < _size; ++i) {
-            if(_table[i].status != CellStatus::EMPTY && _table[i].data != nullptr) {
-                delete _table[i].data;
-                _table[i].data = nullptr;
-            }
+    for(int i = 0; i < _size; ++i) {
+        if(_table[i].status != CellStatus::EMPTY && _table[i].data != nullptr) {
+            _table[i].data.reset();
         }
-    } 
+    }
 }
 
 template <typename K, typename T>
@@ -193,14 +179,13 @@ void HashTable<K,T>::deepCopyHashTable(const HashTable& another) {
     _h2 = another._h2;
     _count = another._count;
     _loadLimit = another._loadLimit;
-    _isReferenceOnly = another._isReferenceOnly;
 
     _table = unique_ptr<Cell[]>(new Cell[_size]);
     for(int i = 0; i < _size; ++i) {
         if(another._table[i].status == CellStatus::ACTIVE) {
             _table[i].key = another._table[i].key;
             _table[i].status = another._table[i].status;
-            _table[i].data = new T(*(another._table[i].data));
+            _table[i].data = make_shared<T>(*(another._table[i].data));
         }
     }
 }
