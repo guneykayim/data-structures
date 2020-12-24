@@ -1,6 +1,8 @@
 #ifndef HASHTABLE_HPP
 #define HASHTABLE_HPP
 
+using std::unique_ptr;
+
 enum class Mode {
    LINEAR, 
    QUADRATIC, 
@@ -43,7 +45,7 @@ private:
 
     int _size; 
     Mode _mode; 
-    Cell* _table;
+    unique_ptr<Cell[]> _table;
     int (*_h)(K);
     int (*_h2)(int); 
     int _count; 

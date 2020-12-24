@@ -1,14 +1,15 @@
+using std::unique_ptr;
+
 template <typename K, typename T>
 HashTable<K,T>::HashTable(int size, int (*h)(K), int (*h2)(int), Mode mode, double loadLimit, bool isReferenceOnly)
     : _size(size), _h(h), _h2(h2), _mode(mode), _loadLimit(loadLimit), _isReferenceOnly(isReferenceOnly)
 { 
     _count = 0;
-    _table = new Cell[_size];
+    _table = unique_ptr<Cell[]>(new Cell[_size]);
     for(int i = 0; i < _size; ++i) {
         _table[i] = Cell();
     }
 }
-
 
 template <typename K, typename T>
 HashTable<K,T>::~HashTable() { 
@@ -47,7 +48,7 @@ int HashTable<K,T>::add(K key, T* data)
     int plus1 = (get(key) == nullptr);
     if(_count+plus1 > _loadLimit * _size) {
         int newSize = 2*_size;
-        Cell* biggerTable = new Cell[newSize];
+        auto biggerTable = unique_ptr<Cell[]>(new Cell[newSize]);
         for(int i = 0; i < newSize; ++i) {
             biggerTable[i] = Cell();
         }
@@ -75,12 +76,9 @@ int HashTable<K,T>::add(K key, T* data)
             }
         }
 
-        // Delete table        
-        delete[] _table;
-        
         // reassign bigger table
         _size = newSize;
-        _table = biggerTable;
+        _table.swap(biggerTable);
 
     }
     int collision_count = 0;
@@ -184,8 +182,6 @@ void HashTable<K,T>::deleteHashTable() {
                 _table[i].data = nullptr;
             }
         }
-        delete[] _table;
-        _table = nullptr;
     } 
 }
 
@@ -199,7 +195,7 @@ void HashTable<K,T>::deepCopyHashTable(const HashTable& another) {
     _loadLimit = another._loadLimit;
     _isReferenceOnly = another._isReferenceOnly;
 
-    _table = new Cell[_size];
+    _table = unique_ptr<Cell[]>(new Cell[_size]);
     for(int i = 0; i < _size; ++i) {
         if(another._table[i].status == CellStatus::ACTIVE) {
             _table[i].key = another._table[i].key;
