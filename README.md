@@ -48,7 +48,7 @@ int size = 10;
 HashTable<string, int> ht(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
 
 // add data
-ht.add("mykey", new int(5));
+ht.add("mykey", shared_ptr<int>(new int(5)));
 ```
 
 ## Building

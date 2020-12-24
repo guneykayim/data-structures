@@ -208,3 +208,76 @@ TEST(HashTableDeepCopy, test4) {
         EXPECT_EQ(*htCopy.get(cities[i]), i);
     }
 }
+
+TEST(HashTableDeepCopy, test5) {
+    int size = 10;
+    HashTable<string, int> *ht = new HashTable<string, int>(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht->add(cities[i], shared_ptr<int>(new int(i)));
+    }
+    
+    HashTable<string, int> htCopy(*ht);
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*ht->get(cities[i]), *htCopy.get(cities[i]));
+        EXPECT_NE(ht->get(cities[i]).get(), htCopy.get(cities[i]).get());
+    }
+}
+
+TEST(HashTableDeepCopy, test6) {
+    int size = 10;
+    HashTable<string, int> *ht = new HashTable<string, int>(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+    for(int i = 0; i < n; ++i){
+        ht->add(cities[i], shared_ptr<int>(new int(i)));
+    }
+    
+    HashTable<string, int> *htCopy = new HashTable<string, int>(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    *htCopy = *ht;
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*ht->get(cities[i]), *htCopy->get(cities[i]));
+        EXPECT_NE(ht->get(cities[i]).get(), htCopy->get(cities[i]).get());
+    }
+}
+
+TEST(HashTableDeepCopy, test7) {
+    int size = 10;
+    HashTable<string, int> *ht = new HashTable<string, int>(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+   
+    for(int i = 0; i < n; ++i){
+        ht->add(cities[i], shared_ptr<int>(new int(i)));
+    }
+    
+    HashTable<string, int> htCopy(*ht);
+
+    delete ht;
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*htCopy.get(cities[i]), i);
+    }
+}
+
+TEST(HashTableDeepCopy, test8) {
+    int size = 10;
+    HashTable<string, int> *ht = new HashTable<string, int>(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    string cities[] = {"istanbul", "nottingham", "manchester", "cambridge", "london", "zurich", "los angeles"};
+    int n = sizeof(cities)/sizeof(*cities);
+   
+    for(int i = 0; i < n; ++i){
+        ht->add(cities[i], shared_ptr<int>(new int(i)));
+    }
+    
+    HashTable<string, int> *htCopy = new HashTable<string, int>(size, hash_func_str, hash_func_int, Mode::LINEAR, 0.5);
+    *htCopy = *ht;
+
+    delete ht;
+
+    for(int i = 0; i < n; ++i){
+        EXPECT_EQ(*htCopy->get(cities[i]), i);
+    }
+}
